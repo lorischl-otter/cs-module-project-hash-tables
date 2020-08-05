@@ -21,8 +21,7 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = [HashTableEntry(None, None)] * capacity
-        self.num_elements = 0
+        self.capacity = [None] * MIN_CAPACITY
 
     def get_num_slots(self):
         """
@@ -42,7 +41,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.num_elements / self.get_num_slots()
+        # Your code here
 
     def fnv1(self, key):
         """
@@ -85,38 +84,8 @@ class HashTable:
 
         Implement this.
         """
-
-        # check for capacity
-        if self.get_load_factor() > 0.7:
-            # upsize
-            self.resize(self.get_num_slots() * 2)
-
-        # generate index for key
         index = self.hash_index(key)
-
-        # check to see if a value already exists at that key
-        if self.capacity[index].key is not None:
-            # check for key at head of list
-            if self.capacity[index].key == key:
-                # override head of list
-                self.capacity[index].value = value
-                return self.capacity[index].value
-            # check for key in rest of list
-            cur = self.capacity[index].next
-
-            while cur is not None:
-                # if value found, overwrite
-                if cur.key == key:
-                    cur.value = value
-                    return cur.value
-                # walk through list
-                cur = cur.next
-
-        # else, add to head
-        new_entry = HashTableEntry(key, value)
-        new_entry.next = self.capacity[index]
-        self.capacity[index] = new_entry
-        self.num_elements += 1
+        self.capacity[index] = value
 
     def delete(self, key):
         """
@@ -127,35 +96,11 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-
         try:
-            if self.capacity[index].key == key:
-                # override head of list
-                old_head = self.capacity[index]
-                self.capacity[index] = self.capacity[index].next
-                self.num_elements -= 1
-                return old_head
-            # check for key in rest of list
-            prev = self.capacity[index]
-            cur = self.capacity[index].next
-
-            while cur is not None:
-                # if value found, overwrite
-                if cur.key == key:
-                    prev.next = cur.next
-                    return cur
-                # walk through list
-                prev = prev.next
-                cur = cur.next
-
+            self.get(key)
+            self.capacity[index] = None
         except KeyError:
             print("Key not found")
-        
-        # check for low capacity & resize if needed
-        if self.get_load_factor() < 0.2:
-            # if not below min capacity, downsize
-            if self.get_num_slots() > MIN_CAPACITY:
-                self.resize(self.get_num_slots() // 2)
 
     def get(self, key):
         """
@@ -165,20 +110,8 @@ class HashTable:
 
         Implement this.
         """
-        # generate index for key
         index = self.hash_index(key)
-
-        # walk list to look for key
-        cur = self.capacity[index]
-
-        while cur is not None:
-            # if value found, overwrite
-            if cur.key == key:
-                return cur.value
-            # walk through list
-            cur = cur.next
-
-        return None
+        return self.capacity[index]
 
     def resize(self, new_capacity):
         """
@@ -187,26 +120,11 @@ class HashTable:
 
         Implement this.
         """
-        # save old hash table values
-        old_table = self.capacity
-
-        # reinitialize new table
-        self.capacity = [HashTableEntry(None, None)] * new_capacity
-
-        # reassign old values to new
-        for entry in old_table:
-            # loop through items in list and map to new list
-            while entry.key is not None:
-                self.put(entry.key, entry.value)
-                entry = entry.next
+        # Your code here
 
 
 if __name__ == "__main__":
     ht = HashTable(8)
-
-    print(ht.get_num_slots())
-    for bin in ht.capacity:
-        print(bin)
 
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
