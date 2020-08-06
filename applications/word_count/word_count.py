@@ -1,6 +1,25 @@
 def word_count(s):
-    # Your code here
 
+    # initialize dictionary
+    d = {}
+
+    # split words from string on whitespace
+    words = s.split()
+
+    # loop through words
+    for w in words:
+        # strip characters to ignore
+        w = w.strip('":;,.-+=/\\|[]{}()*^&').lower()
+        # pass on word if only ignored characters
+        if w == "":
+            continue
+        # if word not already in dictionary, add to dict
+        if w not in d:
+            d[w] = 0
+        # add 1 count to key in dict
+        d[w] += 1
+
+    return d
 
 
 if __name__ == "__main__":
